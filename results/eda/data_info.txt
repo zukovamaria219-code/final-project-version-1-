@@ -1,0 +1,26 @@
+Shape: (3194, 23)
+
+show_id                int64
+type                  object
+title                 object
+director              object
+cast                  object
+country               object
+date_added            object
+release_year           int64
+rating               float64
+duration              object
+genres                object
+language              object
+description           object
+popularity           float64
+vote_count             int64
+vote_average         float64
+title_clean           object
+total_weeks_top10      int64
+best_weekly_rank     float64
+in_top10               int64
+imdb_rating          float64
+imdb_num_votes       float64
+avg_trend_score      float64
+dtype: object
