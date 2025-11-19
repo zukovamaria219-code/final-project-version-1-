@@ -1,0 +1,13 @@
+data/*.tsv
+data/*.xlsx
+data/netflix_tv_shows_detailed_up_to_2025.csv
+data/merged_shows_top10.csv
+data/merged_shows_top10_US.csv
+data/merged_shows_top10_US_imdb.csv
+
+
+!data/merged_shows_top10_US_imdb_trends.csv
+
+
+__pycache__/
+*.pyc
