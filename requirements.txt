@@ -1,0 +1,18 @@
+# Core
+pandas
+numpy
+
+# Visualization
+matplotlib
+
+# Modeling
+scikit-learn
+
+# the raw ETL scripts that use Excel or Google Trends
+openpyxl        # for reading Excel (global_weekly.xlsx)
+pytrends        # if you keep / document the Trends collection script
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
