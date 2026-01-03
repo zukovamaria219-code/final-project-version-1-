@@ -7,7 +7,7 @@ data/merged_shows_top10_US_imdb.csv
 
 
 !data/merged_shows_top10_US_imdb_trends.csv
-
+!data/merged_shows_top10_US_imdb.csv 
 
 __pycache__/
 *.pyc

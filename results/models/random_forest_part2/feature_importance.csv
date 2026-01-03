@@ -1,0 +1,25 @@
+feature,importance
+num__log_imdb_num_votes,0.4079706629389063
+num__release_year,0.19913370531395994
+num__imdb_rating,0.1489328606479565
+genres__drama,0.041929818223872
+genres__comedy,0.023765953430391496
+genres__crime,0.019225505689812596
+genres__sci-fi & fantasy,0.019120939759739424
+genres__reality,0.017546150285952928
+genres__action & adventure,0.015696923054988633
+genres__family,0.01563480858998756
+genres__animation,0.014544942415028047
+genres__mystery,0.011857173034324936
+lang__language_top_en,0.01178939194902673
+genres__documentary,0.01082427446769004
+genres__talk,0.009883766404215191
+genres__kids,0.00988262206094401
+lang__language_top_es,0.005396124745682703
+genres__soap,0.004325027320957739
+genres__war & politics,0.004172756172084741
+genres__western,0.003516039987080062
+lang__language_top_other,0.003061659906806759
+lang__language_top_ja,0.0008546029507588691
+lang__language_top_ko,0.0007837484411044409
+lang__language_top_zh,0.00015054220872823254

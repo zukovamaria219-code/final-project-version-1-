@@ -4,15 +4,14 @@ numpy
 
 # Visualization
 matplotlib
+seaborn
+matplotlib>=3.7.0
 
 # Modeling
 scikit-learn
+statsmodels
+xgboost
 
-# the raw ETL scripts that use Excel or Google Trends
-openpyxl        # for reading Excel (global_weekly.xlsx)
-pytrends        # if you keep / document the Trends collection script
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
+# Data reading / ETL support
+openpyxl
+pytrends
