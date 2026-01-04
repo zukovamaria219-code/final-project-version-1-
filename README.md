@@ -1,53 +1,113 @@
-Main questions of the project: 
-RQ1 – Predictive accuracy:how well can we predict whether a U.S. Netflix TV show will ever enter the U.S. Top-10 based on audience response (IMDb + Google Trends) and basic metadata?
-RQ2 – Drivers of success:which factors are most strongly associated with Top-10 success: IMDb rating, Google search interest, number of votes, or show characteristics (release year, etc.)?
-RQ3 – Value of public interest vs ratings:does Google search interest provide additional predictive power beyond IMDb rating alone?
-RQ4 – Model comparison:how do simple models (logistic regression) compare to more flexible models (Random Forest, XGBoost) in terms of accuracy and interpretability?
+# ============================================
+# README (bash-style runbook)
+# What Makes a Netflix Hit? — U.S. Top-10 TV Prediction
+# ============================================
 
+# ----------------------------
+# 0. Project goal
+# ----------------------------
+# Predict whether a U.S. Netflix TV show will ever enter the U.S. weekly Top-10.
+# Data sources: Netflix Top-10 histories + Netflix metadata + IMDb rating/votes + (optional) Google Trends.
+# Evaluation: out-of-time split (train release_year <= 2022, test 2023–2024).
+# Models: Logistic Regression, Random Forest, XGBoost. RQ3 compares IMDb-only vs IMDb+Trends.
 
+# ----------------------------
+# 1. Clone repository
+# ----------------------------
+git clone https://github.com/zukovamaria219-code/final-project-version-1-
+cd final-project1
 
-### Exploratory Data Analysis
- Data
-All data used in this project are stored in the data/ folder.Raw / external sources (not fully tracked in GitHub due to size limits):
-1. netflix_tv_shows_detailed_up_to_2025.csv – Netflix catalogue with show metadata.
-2. 2025-11-17_global_weekly.xlsx – Netflix weekly Top-10 charts.
-3. title.basics.tsv, title.ratings.tsv – IMDb title metadata and ratings.
-
-Intermediate merge scripts:
-1. merge_data.py – merges Netflix TV catalogue with US Top-10 info.
-2. merge_with_imdb.py – adds IMDb ratings and vote counts.
-3. add_trends.py – adds Google Trends search interest.
-4. check_final_counts.py – prints counts of shows / hits / non-hits for sanity checks.
-
-Final modeling dataset (used by EDA and models):
-1. merged_shows_top10_US_imdb_trends.csv – one row per US TV show (release year ≥ 2010), with:
-2. in_top10 (0/1) – whether the show ever reached the US TV Top-10
-3. imdb_rating, imdb_num_votes
-4. avg_trend_score – US Google Trends average search interest in the release year
-plus basic Netflix metadata (title, year, genre, etc.)
-
-To reproduce basic EDA (summary statistics, correlations, and plots), run:
-
-```bash
-python -m src.eda_basic
-
-2.Installation 
+# ----------------------------
+# 2. Create environment + install dependencies
+# ----------------------------
+python -m venv .venv
+source .venv/bin/activate          # macOS/Linux
+# .venv\Scripts\activate           # Windows (PowerShell/CMD)
 pip install -r requirements.txt
 
-3. Run EDA which generates summary stats + plots.
+# ----------------------------
+# 3. Data (recommended path)
+# ----------------------------
+# The repo is designed to run out-of-the-box using final merged CSVs in ./data/:
+#   Part 1: data/merged_shows_top10_US_imdb_trends.csv
+#   Part 2: data/merged_shows_top10_US_imdb.csv
+#
+# Verify they exist:
+ls -lh data/merged_shows_top10_US_imdb_trends.csv
+ls -lh data/merged_shows_top10_US_imdb.csv
+
+# ----------------------------
+# 4. Quickstart (run everything)
+# ----------------------------
+# Runs EDA + main models and writes artifacts to ./results/
+python main.py
+
+# Outputs (after running):
+#   results/eda/
+#   results/figures/
+#   results/models/
+
+# ----------------------------
+# 5. Run components individually (optional)
+# ----------------------------
+
+# --- EDA ---
 python -m src.eda_basic
-outputs saved to results/eda/
+python -m src.eda_descriptive
 
-4. Baseline logistic regression
+# --- Part 1 models (IMDb + Trends subset) ---
 python -m src.models.logistic_baseline
-
-5. Logistic regression comparison (scaled vs non-scaled)
 python -m src.models.logistic_compare
-
-6. RQ3: Does Google Trends add predictive power?
+python -m src.models.random_forest_baseline
+python -m src.models.xgboost_baseline
 python -m src.models.rq3_test
-
-Outputs are saved in results/figures/ and results/models/
-7. I performed a Multicollinearity check (VIF) to evaluate relationships between predictors.”
 python -m src.models.check_vif
-Outputs are saved in results/models/logistic_baseline
+
+# --- Part 2 models (IMDb + metadata; larger sample) ---
+python -m src.models.logistic_part2_combined
+python -m src.models.random_forest_part2
+python -m src.models.xgboost_part2
+
+# ----------------------------
+# 6. (Optional) Rebuild datasets from raw sources
+# ----------------------------
+# Raw data links (fill in manually):
+#   Netflix catalogue (Kaggle): <https://www.kaggle.com/datasets/bhargavchirumamilla/netflix-movies-and-tv-shows-till-2025>
+#   Netflix Top-10 charts (Tudum): <https://www.netflix.com/tudum/top10>
+#   IMDb datasets: <https://developer.imdb.com/non-commercial-datasets/>
+#   Google Trends: generated via script (API limits may apply)
+#
+# Place raw files into ./data/ (or adjust script paths), then run:
+python data/merge_data.py
+python data/merge_with_imdb.py
+python data/add_trends.py
+python data/check_final_counts.py
+python data/check_counts_part2.py
+
+# ----------------------------
+# 7. Reproducibility notes (what matters)
+# ----------------------------
+# - Temporal split for leakage control: train release_year <= 2022, test 2023–2024
+# - Fixed random seed: random_state=42 (or equivalent)
+# - Imbalance handling:
+#     sklearn: class_weight="balanced"
+#     XGBoost: scale_pos_weight (from training label ratio)
+
+# ----------------------------
+# 8. Tests (optional)
+# ----------------------------
+pytest -q
+
+# ----------------------------
+# 9. Troubleshooting (common)
+# ----------------------------
+# Missing file error:
+#   - confirm you're in project root and the CSVs exist in ./data/
+#   - run: ls data/
+#
+# Package error:
+#   - activate venv and reinstall: pip install -r requirements.txt
+#
+# XGBoost install issues:
+#   pip install -U pip setuptools wheel
+#   pip install xgboost

@@ -14,6 +14,10 @@ def main():
     # -----------------------------
     # 2) Models
     # -----------------------------
+    print("\n[Logistic] Running simple logistic regression baseline (IMDb+Trends, time split)...")
+    from src.models.logistic_baseline import main as run_logistic_baseline
+    run_logistic_baseline()
+    
     print("\n[Logistic] Running logistic comparison (simple vs scaled)...")
     from src.models.logistic_compare import main as run_logistic_compare
     run_logistic_compare()
@@ -31,9 +35,9 @@ def main():
     run_xgb()
 
     # -----------------------------
-    # 3) RQ3 lift test (optional)
+    # 3) RQ3 lift test
     # -----------------------------
-    # Only works if you saved your RQ3 script as a file in src/models/
+    
     try:
         print("\n[RQ3] Running lift test (IMDb-only vs IMDb+Trends)...")
         from src.models.rq3_test import main as run_rq3

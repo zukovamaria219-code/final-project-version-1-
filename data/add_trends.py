@@ -9,7 +9,7 @@ print("Loaded shows:", shows.shape)
 if "in_top10" not in shows.columns:
     raise ValueError("Column 'in_top10' missing; did you use merged_shows_top10_US_imdb.csv?")
 
-# Clean title for safety
+# Clean title
 shows["title_clean"] = shows["title"].str.strip().str.lower()
 
 # ---------- 2. Choose which shows to query for Trends ----------
@@ -64,7 +64,7 @@ for idx, row in subset.iterrows():
     year = row["release_year"]
     score = get_trend_score(title, year)
     scores[idx] = score
-    # be gentle with Google; adjust pause if needed
+    
     time.sleep(1)
 
 # ---------- 5. Attach scores back to the full shows dataframe ----------
