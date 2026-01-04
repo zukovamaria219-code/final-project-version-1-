@@ -1,12 +1,8 @@
-
-
 from __future__ import annotations
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.impute import SimpleImputer
@@ -26,16 +22,15 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, FunctionTransformer
 
 
-# -------------------------------------------------------------
-# 1) Helpers: paths + small text processing
-# -------------------------------------------------------------
+# 1) Paths + small text processing
+
 def get_project_root() -> Path:
     # .../src/models/random_forest_part2.py -> parents[2] is project root
     return Path(__file__).resolve().parents[2]
 
 
 def _genre_tokenizer(text: str) -> list[str]:
-    # WHY: genres are multi-label; we split "Drama, Crime, Action & Adventure"
+    # Because genres are multi-label; I split "Drama, Crime, Action & Adventure"
     if text is None:
         return []
     if not isinstance(text, str):
@@ -44,9 +39,8 @@ def _genre_tokenizer(text: str) -> list[str]:
     return [p for p in parts if p]
 
 
-# -------------------------------------------------------------
 # 2) Load + filter exactly like Part 2 setup (no Trends required)
-# -------------------------------------------------------------
+
 def load_data() -> pd.DataFrame:
     root = get_project_root()
     data_path = root / "data" / "merged_shows_top10_US_imdb.csv"
@@ -68,17 +62,17 @@ def load_data() -> pd.DataFrame:
     df["imdb_num_votes"] = pd.to_numeric(df["imdb_num_votes"], errors="coerce")
     df["log_imdb_num_votes"] = np.log1p(df["imdb_num_votes"])
 
-    # WHY: keep modern era comparable with Part 1 and reduce missingness effects
+    # To keep modern era comparable with Part 1 and reduce missingness effects
     df = df[df["release_year"].notna() & (df["release_year"] >= 2010)].copy()
 
-    # WHY: Part 2 keeps IMDb variables (engagement proxies) as a baseline reference
+    # So that Part 2 keeps IMDb variables (engagement proxies) as a baseline reference
     df = df.dropna(subset=["imdb_rating", "log_imdb_num_votes"]).copy()
 
     return df
 
 
 def temporal_split(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    # WHY: avoid leakage from future shows into training
+    # To avoid leakage from future shows into training
     train_df = df[df["release_year"] <= 2022].copy()
     test_df = df[df["release_year"] >= 2023].copy()
 
@@ -90,7 +84,7 @@ def temporal_split(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 def cap_top_languages(
     train_df: pd.DataFrame, test_df: pd.DataFrame, top_n: int = 5
 ) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
-    # WHY: reduce very high-cardinality languages and keep model stable
+    # To reduce very high-cardinality languages and keep model stable
     top_langs = (
         train_df["language"].fillna("unknown")
         .value_counts()
@@ -110,9 +104,9 @@ def cap_top_languages(
     return train_df, test_df, top_langs
 
 
-# -------------------------------------------------------------
+
 # 3) Model: preprocessing + Random Forest
-# -------------------------------------------------------------
+
 def build_model(random_state: int = 42) -> Pipeline:
     # Genres -> multi-hot (top K genre tokens learned from TRAIN only)
     genre_pipe = Pipeline(
@@ -123,7 +117,7 @@ def build_model(random_state: int = 42) -> Pipeline:
                 preprocessor=None,
                 token_pattern=None,
                 binary=True,
-                max_features=15,  # keep only the most common genres
+                max_features=15,  # To keep only the most common genres
             )),
         ]
     )
@@ -136,7 +130,7 @@ def build_model(random_state: int = 42) -> Pipeline:
         ]
     )
 
-    # Numeric: scale helps when combined with sparse one-hot in pipeline
+    # Scale helps when combined with sparse one-hot in pipeline
     num_pipe = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
@@ -156,7 +150,7 @@ def build_model(random_state: int = 42) -> Pipeline:
         n_estimators=500,
         max_depth=None,
         min_samples_leaf=2,
-        class_weight="balanced",  # WHY: hits are rare in Part 2
+        class_weight="balanced",  # Because hits are rare in Part 2
         random_state=random_state,
         n_jobs=-1,
     )
@@ -180,9 +174,9 @@ def get_feature_names(model: Pipeline) -> np.ndarray:
     return np.concatenate([genre_names, lang_names, num_names])
 
 
-# -------------------------------------------------------------
+
 # 4) Evaluation + saving outputs
-# -------------------------------------------------------------
+
 def save_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, out_path: Path) -> None:
     disp = ConfusionMatrixDisplay.from_predictions(y_true, y_pred, values_format="d")
     plt.title("Random Forest (Part 2) — Confusion Matrix")
@@ -230,7 +224,7 @@ def save_feature_importance(
     imp_df.to_csv(out_csv, index=False)
 
     top = imp_df.head(top_n).copy()
-    # plot top_n
+    
     plt.figure(figsize=(7, leading_lines(top_n)))
     plt.barh(range(len(top))[::-1], top["importance"].values)
     plt.yticks(range(len(top))[::-1], top["feature"].values)
@@ -242,7 +236,7 @@ def save_feature_importance(
 
 
 def leading_lines(n: int) -> float:
-    # small helper to keep plot readable without hardcoding huge figures
+    # To keep plot readable without hardcoding huge figures
     return max(4.0, min(10.0, 0.25 * n + 2.5))
 
 
@@ -288,7 +282,7 @@ def run(random_state: int = 42) -> None:
         print(f"{k:10s}: {v:.3f}")
     print(f"Random state used: {random_state}")
 
-    # Save outputs
+    # Used to save outputs
     root = get_project_root()
     out_dir = root / "results" / "models" / "random_forest_part2"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -298,7 +292,7 @@ def run(random_state: int = 42) -> None:
     save_roc_curve(y_test.values, y_prob, out_dir / "roc_curve.png")
     save_pr_curve(y_test.values, y_prob, out_dir / "pr_curve.png")
 
-    # Feature importance (many features -> save full CSV + plot top 25)
+    # Feature importance
     names = get_feature_names(model)
     importances = model.named_steps["rf"].feature_importances_
     save_feature_importance(

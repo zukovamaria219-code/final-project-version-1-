@@ -1,6 +1,4 @@
-
 from __future__ import annotations
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -133,7 +131,7 @@ def build_model(random_state: int, scale_pos_weight: float) -> Pipeline:
         ]
     )
 
-    # Simple, stable XGBoost config (no early stopping needed)
+  
     xgb = XGBClassifier(
         n_estimators=600,
         max_depth=4,
@@ -279,7 +277,6 @@ def run(random_state: int = 42) -> None:
     save_feature_importance(names, importances, out_dir, top_n=25)
 
     print(f"\nSaved outputs to: {out_dir}")
-
 
 if __name__ == "__main__":
     run(random_state=42)

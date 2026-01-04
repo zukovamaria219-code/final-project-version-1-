@@ -1,10 +1,3 @@
-# Baseline XGBoost model for predicting Netflix Top-10 success.
-# - loads final merged dataset
-# - applies same filtering & feature engineering as logistic/RF
-# - uses temporal split (<=2022 train, >=2023 test)
-# - trains XGBoostClassifier
-# - saves metrics, ROC curve, confusion matrix, feature importances
-
 from pathlib import Path
 import json
 import numpy as np
@@ -17,13 +10,13 @@ from sklearn.metrics import (
 from xgboost import XGBClassifier
 
 
-# ---------------------------------------------------------
+
 # 1. Helpers
-# ---------------------------------------------------------
+
 
 def get_project_root() -> Path:
     """Return the project root directory."""
-    return Path(__file__).resolve().parents[2]  # models -> src -> root
+    return Path(__file__).resolve().parents[2]  
 
 
 def load_and_prepare_data():
@@ -35,7 +28,7 @@ def load_and_prepare_data():
     df = df[df["avg_trend_score"].notna()]
     df = df[df["release_year"] >= 2010]
 
-    # Feature engineering
+  
     df["log_imdb_num_votes"] = np.log1p(df["imdb_num_votes"])
 
     needed = ["imdb_rating", "log_imdb_num_votes", "avg_trend_score", "in_top10"]
@@ -48,9 +41,9 @@ def load_and_prepare_data():
     return train, test
 
 
-# ---------------------------------------------------------
+
 # 2. Save helpers (ROC, confusion matrix, feature importance)
-# ---------------------------------------------------------
+
 
 def save_roc_curve(y_test, y_prob, save_path):
     fpr, tpr, _ = roc_curve(y_test, y_prob)
@@ -95,9 +88,9 @@ def save_feature_importance(model, feature_names, save_path_csv, save_path_plot)
     plt.close()
 
 
-# ---------------------------------------------------------
+
 # 3. Main training & evaluation
-# ---------------------------------------------------------
+
 
 def main():
     train_df, test_df = load_and_prepare_data()
@@ -115,9 +108,9 @@ def main():
     results_dir = root / "results" / "models" / "xgboost_baseline"
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # -----------------------
+    
     # Train XGBoost model
-    # -----------------------
+   
     model = XGBClassifier(
         n_estimators=300,
         max_depth=5,
@@ -131,15 +124,15 @@ def main():
 
     model.fit(X_train, y_train)
 
-    # -----------------------
+    
     # Predict
-    # -----------------------
+    
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
 
-    # -----------------------
+    
     # Metrics
-    # -----------------------
+    
     metrics = {
         "n_train": int(len(X_train)),
         "n_test": int(len(X_test)),

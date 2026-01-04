@@ -1,11 +1,3 @@
-# src/models/logistic_compare.py
-#
-# Compare two logistic regression models:
-# 1) Simple (no scaling)
-# 2) Pipeline with StandardScaler (more standard setup)
-#
-# Both use the same data, same temporal train/test split, and same features.
-
 from pathlib import Path  
 import numpy as np        
 import pandas as pd       
@@ -22,7 +14,7 @@ from sklearn.metrics import (
 )
 
 
-# ---------- 1. Helper: project root and data loading ----------
+# ---------- 1. Set project root and load data ----------
 
 def get_project_root() -> Path:
     """
@@ -58,7 +50,7 @@ def prepare_model_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["avg_trend_score"].notna()]                         
     df = df[df["release_year"] >= 2010]                            
 
-    # Log-transform vote counts (add 1 to handle zeros)
+    # Log-transform vote counts and add 1 to handle zeros
     df["log_imdb_num_votes"] = np.log1p(df["imdb_num_votes"])      
 
     # Drop rows with missing values in the columns we need
@@ -150,7 +142,7 @@ def evaluate_model(model, X_train, y_train, X_test, y_test, model_name: str):
     return results
 
 
-# ---------- 6. Main: run everything and compare ----------
+# ---------- 6. Main ----------
 
 def main():
     # 1) Load and prepare data
@@ -188,11 +180,11 @@ def main():
     results_df = results_df[cols_order]
     results_df_rounded = results_df.round(3)
 
-    # 7) Pretty print
+    
     print("\n=== Logistic regression comparison (test set) ===")
     print(results_df_rounded.to_string(index=False))
 
-    # 8) Save table to results/ for later use in report
+    # 7) Save table to results/ for later use in report
     root = get_project_root()
     results_dir = root / "results" / "models"
     results_dir.mkdir(parents=True, exist_ok=True)

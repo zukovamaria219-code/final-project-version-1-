@@ -3,7 +3,6 @@ pandas
 numpy
 
 # Visualization
-matplotlib
 seaborn
 matplotlib>=3.7.0
 

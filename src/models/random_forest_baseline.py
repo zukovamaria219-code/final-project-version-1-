@@ -1,6 +1,3 @@
-# Random Forest baseline model (same 3 features as logistic)
-# Saves metrics, confusion matrix, ROC curve, and feature importance plot.
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -13,9 +10,9 @@ from sklearn.metrics import (
     roc_auc_score, roc_curve, confusion_matrix
 )
 
-# -------------------------------------------------------------
-# 1. Helpers: get project root + load data
-# -------------------------------------------------------------
+
+# 1. To get project root + load data
+
 
 def get_project_root() -> Path:
     
@@ -40,9 +37,9 @@ def load_data() -> pd.DataFrame:
     return df
 
 
-# -------------------------------------------------------------
+
 # 2. Temporal split (train ≤ 2022, test ≥ 2023)
-# -------------------------------------------------------------
+
 
 def temporal_split(df: pd.DataFrame):
     train = df[df["release_year"] <= 2022]
@@ -50,9 +47,9 @@ def temporal_split(df: pd.DataFrame):
     return train, test
 
 
-# -------------------------------------------------------------
+
 # 3. Train + evaluate Random Forest
-# -------------------------------------------------------------
+
 
 def evaluate_rf():
     df = load_data()
@@ -67,7 +64,7 @@ def evaluate_rf():
     X_test = test_df[features]
     y_test = test_df[target]
 
-    # Build the model
+    
     rf = RandomForestClassifier(
         n_estimators=300,
         max_depth=None,
@@ -90,9 +87,9 @@ def evaluate_rf():
         "roc_auc": roc_auc_score(y_test, y_prob)
     }
 
-    # ---------------------------------------------------------
+    
     # Save results
-    # ---------------------------------------------------------
+  
     root = get_project_root()
     out_dir = root / "results" / "models" / "random_forest_baseline"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -147,8 +144,8 @@ def evaluate_rf():
     print(f"\nSaved outputs to: {out_dir}")
 
 
-# -------------------------------------------------------------
+
 # Entry point
-# -------------------------------------------------------------
+
 if __name__ == "__main__":
     evaluate_rf()

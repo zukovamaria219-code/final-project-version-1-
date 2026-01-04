@@ -47,6 +47,37 @@ def main():
 
     print("\n✅ Done. Check results/ for outputs.")
 
+    # -----------------------------
+    # 4) Part 2 models (IMDb + metadata; larger sample)
+    # -----------------------------
+    try:
+        print("\n[Part 2 Logistic] Running logistic regression (combined features)...")
+        from src.models.logistic_part2_combined import main as run_logistic_part2
+        run_logistic_part2(random_state=42)
+    except ModuleNotFoundError:
+        print("\n[Part 2 Logistic] Skipped: src/models/logistic_part2_combined.py not found.")
+    except FileNotFoundError as e:
+        print(f"\n[Part 2 Logistic] Skipped: missing data file -> {e}")
+
+    # 5) PART 2: Random Forest
+    try:
+        print("\n[Part 2 Random Forest] Running Random Forest (combined features)...")
+        from src.models.random_forest_part2 import run as run_rf_part2
+        run_rf_part2(random_state=42)
+    except ModuleNotFoundError:
+        print("\n[Part 2 Random Forest] Skipped: src/models/random_forest_part2.py not found.")
+    except FileNotFoundError as e:
+        print(f"\n[Part 2 Random Forest] Skipped: missing data file -> {e}")
+
+    # 6) PART 2: XGBoost
+    try:
+        print("\n[Part 2 XGBoost] Running XGBoost (combined features)...")
+        from src.models.xgboost_part2 import run as run_xgb_part2
+        run_xgb_part2(random_state=42)
+    except ModuleNotFoundError:
+        print("\n[Part 2 XGBoost] Skipped: src/models/xgboost_part2.py not found.")
+    except FileNotFoundError as e:
+        print(f"\n[Part 2 XGBoost] Skipped: missing data file -> {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,13 +1,4 @@
 
-# Simple logistic regression for Netflix Top-10 prediction.
-# - loads the merged dataset
-# - keeps only shows with Trends + year >= 2010
-# - drops rows with missing features
-# - time-based train/test split (<= 2022 vs >= 2023)
-# - fits logistic regression
-# - prints basic metrics and coefficients
-# - saves coefficient plot and confusion matrix plot
-
 from pathlib import Path
 
 import numpy as np
@@ -25,7 +16,7 @@ from sklearn.metrics import (
 )
 
 
-# --- 1. Setup & Data Loading (Same logic as your baseline) ---
+# --- 1. Setup & Data Loading  ---
 
 def get_project_root() -> Path:
     """Return project root (one level above src/)."""
@@ -134,7 +125,7 @@ def plot_confusion_matrix(y_true, y_pred, save_path):
 # --- 3. Main Execution ---
 
 def main():
-    # A. Prepare data
+    # A. Used to prepare data
     train_df, test_df = load_and_prep_data()
 
     features = ["imdb_rating", "log_imdb_num_votes", "avg_trend_score"]

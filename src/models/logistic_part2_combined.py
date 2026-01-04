@@ -70,7 +70,7 @@ def temporal_split(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def cap_top_languages(train_df: pd.DataFrame, test_df: pd.DataFrame, top_n: int = 5) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
-    # Pick top languages from TRAIN only (no leakage)
+    # Pick top languages from TRAIN only to ensure no leakage
     top_langs = (
         train_df["language"].fillna("unknown")
         .value_counts()
@@ -101,12 +101,12 @@ def build_model(random_state: int = 42) -> Pipeline:
                 preprocessor=None,
                 token_pattern=None,
                 binary=True,
-                max_features=10,  # top 10 genres
+                max_features=10,  
             )),
         ]
     )
 
-    # Language -> one-hot (but we already capped to top 5 + other)
+    # Language -> one-hot 
     lang_pipe = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="most_frequent")),
@@ -202,7 +202,7 @@ def main(random_state: int = 42) -> None:
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1]
 
-    # Useful diagnostic: how many positives we predict
+    # To diagnose how many positives code predicts
     print(f"Predicted positives: {int(y_pred.sum())} out of {len(y_pred)}")
 
     acc = accuracy_score(y_test, y_pred)

@@ -1,5 +1,3 @@
-# src/eda_descriptive.py
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -51,9 +49,9 @@ def main():
     )
     overall_counts.to_csv(results_dir / "overall_hit_proportions_full_dataset.csv")
 
-    # ---------------------------------------------------------------------
+   
     # 2. MODELING SUBSET: with Trends & release_year >= 2010
-    # ---------------------------------------------------------------------
+    
     df_model = df[df["avg_trend_score"].notna()].copy()
     df_model = df_model[df_model["release_year"] >= 2010].copy()
 
@@ -76,9 +74,9 @@ def main():
     )
     model_counts.to_csv(results_dir / "hit_proportions_model_dataset.csv")
 
-    # ---------------------------------------------------------------------
+ 
     # 3. Numeric summary for key variables (modeling dataset)
-    # ---------------------------------------------------------------------
+    
     numeric_cols = [
         "imdb_rating",
         "imdb_num_votes",
@@ -110,9 +108,9 @@ def main():
     print(group_stats)
     print()
 
-    # ---------------------------------------------------------------------
-    # 5. Correlation matrix (includes in_top10 -> point-biserial correlations)
-    # ---------------------------------------------------------------------
+    
+    # 5. Correlation matrix (includes in_top10 )
+    
     corr_cols = numeric_cols + ["in_top10"]
     corr = df_model[corr_cols].corr()
     corr.to_csv(results_dir / "correlation_model_dataset.csv")
@@ -121,9 +119,9 @@ def main():
     print(corr["in_top10"].sort_values(ascending=False))
     print()
 
-    # ---------------------------------------------------------------------
+    
     # 6. Conditional hit probabilities: P(hit | bins)
-    # ---------------------------------------------------------------------
+    
     # Rating bins
     rating_bins = pd.cut(
         df_model["imdb_rating"],

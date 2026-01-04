@@ -1,11 +1,9 @@
-# src/check_top10_counts.py
-
 from pathlib import Path
 import pandas as pd
 
 
 def get_project_root() -> Path:
-    # one level above src/
+    
     return Path(__file__).resolve().parents[1]
 
 

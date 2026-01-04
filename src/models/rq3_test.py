@@ -17,12 +17,12 @@ def load_and_prep_data():
     # Load data
     df = pd.read_csv(data_path)
     
-    # 1. Create the Log Feature FIRST
-    # We add 1 to avoid log(0) errors, though log1p does this automatically
+    # 1. To create the Log Feature 
+    # I add 1 to avoid log(0) errors, though log1p does this automatically
     df["log_imdb_num_votes"] = np.log1p(df["imdb_num_votes"])
     
-    # 2. Define ALL columns we might need for ANY model
-    # We must drop NaNs from ALL of these so both models use the exact same rows
+    # 2. Define all columns I might need for any model
+    # I must drop NaNs from all of these so both models use the exact same rows
     cols_needed = [
         "imdb_rating", 
         "log_imdb_num_votes", 
@@ -31,7 +31,7 @@ def load_and_prep_data():
         "release_year"
     ]
     
-    # 3. Filter: Keep only rows where ALL needed columns have data
+    # 3. To Keep only rows where all needed columns have data
     before_drop = len(df)
     df = df.dropna(subset=cols_needed)
     after_drop = len(df)
@@ -39,7 +39,7 @@ def load_and_prep_data():
     print(f"Dropped {before_drop - after_drop} rows containing missing values (NaN).")
     print(f"Rows remaining: {after_drop}")
 
-    # 4. Filter: Modern shows only (as per your project logic)
+    # 4. To keep modern shows only
     df = df[df["release_year"] >= 2010]
     
     # 5. Temporal Split
@@ -60,7 +60,7 @@ def train_and_score(X_train, y_train, X_test, y_test):
     
     model.fit(X_train, y_train)
     
-    # Get probabilities for the positive class (class 1)
+    # To get probabilities for the positive class (class 1)
     y_probs = model.predict_proba(X_test)[:, 1]
     
     # Calculate AUC
@@ -73,7 +73,7 @@ def main():
     train_df, test_df = load_and_prep_data()
     target = "in_top10"
     
-    # Define the two feature sets
+    # To define the two feature sets
     features_baseline = ["imdb_rating", "log_imdb_num_votes"]
     features_full     = ["imdb_rating", "log_imdb_num_votes", "avg_trend_score"]
     
