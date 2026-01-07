@@ -12,11 +12,7 @@ if "in_top10" not in shows.columns:
 # Clean title
 shows["title_clean"] = shows["title"].str.strip().str.lower()
 
-# ---------- 2. Choose which shows to query for Trends ----------
-# To keep requests manageable and relevant:
-# - only recent releases (>= 2018)
-# - all Top-10 hits in that window
-# - plus an equal number of non-hits as a comparison group
+# ---------- 2. To choose which shows to query for Trends ----------
 
 recent = shows[shows["release_year"] >= 2010].copy()
 hits_recent = recent[recent["in_top10"] == 1]
@@ -68,7 +64,7 @@ for idx, row in subset.iterrows():
     time.sleep(1)
 
 # ---------- 5. Attach scores back to the full shows dataframe ----------
-shows["avg_trend_score"] = None  # create column
+shows["avg_trend_score"] = None  
 
 for idx, score in scores.items():
     shows.loc[idx, "avg_trend_score"] = score

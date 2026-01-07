@@ -47,7 +47,6 @@ def temporal_split(df: pd.DataFrame):
     return train, test
 
 
-
 # 3. Train + evaluate Random Forest
 
 

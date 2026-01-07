@@ -63,7 +63,7 @@ def train_and_score(X_train, y_train, X_test, y_test):
     # To get probabilities for the positive class (class 1)
     y_probs = model.predict_proba(X_test)[:, 1]
     
-    # Calculate AUC
+    
     auc = roc_auc_score(y_test, y_probs)
     return auc
 

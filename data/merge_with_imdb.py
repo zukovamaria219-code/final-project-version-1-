@@ -9,7 +9,7 @@ if "in_top10" not in shows.columns:
     raise ValueError("Column 'in_top10' not found in merged_shows_top10_US.csv")
 
 # ---------- 2. Load IMDb TV-only subset + ratings ----------
-# This should be the smaller file we created with only tvSeries + tvMiniSeries
+
 imdb_tv = pd.read_csv("imdb_tv_series_only.tsv", sep="\t")
 
 # Ratings file from IMDb datasets
@@ -26,7 +26,7 @@ shows["title_clean"] = shows["title"].str.strip().str.lower()
 imdb_tv["title_clean"] = imdb_tv["primaryTitle"].str.strip().str.lower()
 
 # ---------- 4. Handle duplicate IMDb titles ----------
-# If multiple IMDb rows have the same cleaned title, keep the one with most votes
+
 imdb_tv = (
     imdb_tv
     .sort_values("numVotes", ascending=False)
@@ -52,7 +52,7 @@ shows_imdb = shows_imdb.rename(
 
 print("\nAfter IMDb merge (all US TV shows):", shows_imdb.shape)
 
-# ---------- 6. ALWAYS: print key counts ----------
+# ---------- 6. print key counts ----------
 # 6a) Total US TV shows and number of Top-10 hits (this should stay >= 212)
 total_shows = len(shows_imdb)
 total_hits = shows_imdb["in_top10"].sum()
@@ -60,7 +60,7 @@ total_hits = shows_imdb["in_top10"].sum()
 print(f"Total US TV shows after IMDb merge: {total_shows}")
 print(f"US TV shows in US Top-10 at least once (in_top10 = 1): {total_hits}")
 
-# 6b) How many have IMDb rating info (so you know sample size if you restrict to those)
+# 6b) How many have IMDb rating info
 has_imdb = shows_imdb[shows_imdb["imdb_rating"].notna()]
 n_with_imdb = len(has_imdb)
 hits_with_imdb = has_imdb["in_top10"].sum()
@@ -68,9 +68,8 @@ hits_with_imdb = has_imdb["in_top10"].sum()
 print(f"\nShows with non-missing IMDb rating: {n_with_imdb}")
 print(f"Top-10 hits among those with IMDb rating: {hits_with_imdb}")
 
-# This is the key number for your 'need > 200 hits' check:
-# hits_with_imdb should be comfortably > 200 if you later restrict to shows with IMDb info.
 
-# ---------- 7. Save as a NEW file (versioning) ----------
+
+# ---------- 7. Save  ----------
 shows_imdb.to_csv("merged_shows_top10_US_imdb.csv", index=False)
 print("\nSaved merged_shows_top10_US_imdb.csv")

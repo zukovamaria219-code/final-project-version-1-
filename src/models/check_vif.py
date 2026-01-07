@@ -1,19 +1,5 @@
 # src/models/check_vif.py
 
-"""
-Check multicollinearity (VIF) for the logistic regression features.
-
-I focus on:
-- imdb_rating
-- log_imdb_num_votes
-- avg_trend_score
-
-This uses the same filtering as the logistic models:
-  * avg_trend_score not null
-  * release_year >= 2010
-  * log_imdb_num_votes = log(1 + imdb_num_votes)
-"""
-
 from pathlib import Path
 
 import numpy as np

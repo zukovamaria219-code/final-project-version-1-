@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
 
-# This script mirrors the filtering used in src/models/logistic_part2_combined.py
-
-df = pd.read_csv("merged_shows_top10_US_imdb.csv")  # run from data/ folder
+df = pd.read_csv("merged_shows_top10_US_imdb.csv")  
 
 # Convert types like in the model script
 df["release_year"] = pd.to_numeric(df["release_year"], errors="coerce")

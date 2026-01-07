@@ -65,9 +65,3 @@ The project will be successful if:
 - Results are reproducible and presented professionally (clean code, visualizations, documentation).
 
 ---
-
-## 6. Stretch Goals (If Time Permits) 
-- Build a **Streamlit dashboard** where users can adjust IMDb or trend values and run Monte Carlo simulations interactively.  
-- Extend analysis to compare results between the U.S. and global charts.  
-
----

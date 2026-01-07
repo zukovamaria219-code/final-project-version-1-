@@ -1,5 +1,4 @@
 import pandas as pd
-
 # ---------- 1. Load data ----------
 shows = pd.read_csv("netflix_tv_shows_detailed_up_to_2025.csv")
 global_weekly = pd.read_excel("2025-11-17_global_weekly.xlsx")
@@ -35,7 +34,7 @@ shows_us = shows_us[shows_us["type"].str.contains("TV", case=False, na=False)]
 print("US TV shows in metadata:", len(shows_us))
 
 # ---------- 3. Keep only TV categories in WEEKLY data ----------
-# Now we filter the US weekly chart to TV-only categories
+# Now to filter the US weekly chart to TV-only categories
 global_us_tv = global_us[
     global_us["category"].str.contains("TV", case=False, na=False)
 ]
@@ -43,13 +42,13 @@ global_us_tv = global_us[
 print("US weekly TV rows:", len(global_us_tv))
 print("Unique US TV titles in global_us_tv:", global_us_tv["title_clean"].nunique())
 
-# ---------- 4. Aggregate weekly data to ONE row per show ----------
+# ---------- 4. Aggregate weekly data----------
 top10_agg = (
     global_us_tv
     .groupby("title_clean", as_index=False)
     .agg(
-        total_weeks_top10=("cumulative_weeks_in_top_10", "max"),  # total weeks in US Top-10
-        best_weekly_rank=("weekly_rank", "min"),                  # best US rank (1 = best)
+        total_weeks_top10=("cumulative_weeks_in_top_10", "max"),  
+        best_weekly_rank=("weekly_rank", "min"),                  
     )
 )
 
@@ -62,7 +61,7 @@ print("Rows in top10_agg (unique shows with US Top-10 info):", len(top10_agg))
 shows_merged = shows_us.merge(
     top10_agg,
     on="title_clean",
-    how="left"      # keep all US TV shows, add US Top-10 info where available
+    how="left"      
 )
 
 # For shows never in Top-10, fill NaN with zeros
@@ -71,8 +70,8 @@ shows_merged["total_weeks_top10"] = shows_merged["total_weeks_top10"].fillna(0).
 
 print("\nMerged shape:", shows_merged.shape)
 
-# ---------- 6. Save merged data so you can inspect it ----------
-SAVE_OUTPUT = False  # change to True when you do want to save
+# ---------- 6. Save merged data  ----------
+SAVE_OUTPUT = False  
 
 if SAVE_OUTPUT:
     shows_merged.to_csv("merged_shows_top10_US.csv", index=False)

@@ -1,15 +1,10 @@
 import pandas as pd
 
-path = "title.basics.tsv"   # this matches the filename you see in VS Code
+path = "title.basics.tsv"  
 
-# We will:
-# 1) read the file in chunks
-# 2) count titleType frequencies
-# 3) collect only tvSeries + tvMiniSeries into a smaller dataframe
-
-chunksize = 500_000  # 500k rows at a time
+chunksize = 500_000  
 title_type_counts = {}
-tv_chunks = []       # we'll store only tvSeries + tvMiniSeries chunks here
+tv_chunks = []       
 
 print("Reading IMDb basics in chunks...")
 
@@ -17,7 +12,7 @@ for chunk in pd.read_csv(
     path,
     sep="\t",
     na_values="\\N",
-    usecols=["tconst", "titleType", "primaryTitle"],  # only needed columns
+    usecols=["tconst", "titleType", "primaryTitle"],  
     chunksize=chunksize
 ):
     # 1) update counts for titleType in this chunk
